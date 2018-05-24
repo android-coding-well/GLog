@@ -33,7 +33,7 @@ val config = ALog.init(this)
 ---
 ## JavaDoc文档
 
-* [在线JavaDoc](https://jitpack.io/com/github/huweijian5/GLog/1.0.0/javadoc/index.html)
+* [在线JavaDoc](https://jitpack.io/com/github/android-coding-well/GLog/1.0.0/javadoc/index.html)
 * 网址：`https://jitpack.io/com/github/huweijian5/GLog/[VersionCode]/javadoc/index.html`
 * 其中[VersionCode](https://github.com/huweijian5/GLog/releases)请替换为最新版本号
 * 注意文档使用UTF-8编码，如遇乱码，请在浏览器选择UTF-8编码即可
@@ -61,7 +61,7 @@ dependencies {
 
 ## 注意
 * 为了避免引入第三方库导致工程依赖多个版本的问题，如android support库
-* 故建议在个人的工程目录下的build.gradle下加入以下变量，具体请看此[build.gradle](https://github.com/huweijian5/项目名称/blob/master/build.gradle)
+* 故建议在个人的工程目录下的build.gradle下加入以下变量，具体请看此[build.gradle](https://github.com/huweijian5/GLog/blob/master/build.gradle)
 ```
 ext{
      minSdkVersion = 18
