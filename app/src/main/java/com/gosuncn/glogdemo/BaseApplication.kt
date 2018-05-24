@@ -24,14 +24,15 @@ class BaseApplication:Application(){
                 .setLogHeadSwitch(true)// 设置 log 头信息开关，默认为开
                 .setLog2FileSwitch(false)// 打印 log 时是否存到文件的开关，默认关
                 .setDir("")// 当自定义路径为空时，写入应用的 /cache/log/ 目录中
-                .setFilePrefix("alog")// 当文件前缀为空时，默认为 "alog"，即写入文件为 "alog-yyyy-MM-dd.txt"
+                .setFilePrefix("")// 当文件前缀为空时，默认为 "glog"，即写入文件为 "glog-yyyy-MM-dd.txt"
                 .setBorderSwitch(true)// 输出日志是否带边框开关，默认开
                 .setSingleTagSwitch(true)// 一条日志仅输出一条，默认开，为美化 AS 3.1 的 Logcat
                 .setConsoleFilter(ALog.V)// log 的控制台过滤器，和 logcat 过滤器同理，默认 Verbose
                 .setFileFilter(ALog.V)// log 文件过滤器，和 logcat 过滤器同理，默认 Verbose
                 .setStackDeep(1)// log 栈深度，默认为 1
                 .setStackOffset(0)// 设置栈偏移，比如二次封装的话就需要设置，默认为 0
-                .setLogStoreStrategy(SimpleLogStoreStrategy())
+                .setLogStoreStrategy(SimpleLogStoreStrategy())//设置日志存储策略
+                .setMaxSingleLogFileSize(30)//设置单文件大小，默认15MB
         ALog.d(config.toString())
     }
 }

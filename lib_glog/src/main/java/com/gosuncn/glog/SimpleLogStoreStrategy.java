@@ -8,8 +8,6 @@ import com.gosuncn.glog.util.DateUtil;
 import java.io.File;
 import java.util.Date;
 
-import static com.gosuncn.glog.util.DateUtil.FORMAT_DATE;
-
 /**
  * 日志文件存储策略示例
  * 策略：默认只保存3天的日志，可设置
@@ -21,12 +19,14 @@ public class SimpleLogStoreStrategy implements ILogStoreStrategy {
 
     /**
      * 设置日志存储天数，大于0
+     *
      * @param day
      */
-    public void setLogStoreDay(int day){
-        if(day>0){
-            mLogFileStoreDay=day;
+    public SimpleLogStoreStrategy setLogStoreDay(int day) {
+        if (day > 0) {
+            mLogFileStoreDay = day;
         }
+        return this;
     }
 
     @Override
@@ -49,11 +49,13 @@ public class SimpleLogStoreStrategy implements ILogStoreStrategy {
         Log.i(TAG, "日志保存目录下文件个数: " + files.length);
         for (File file : files) {
             if (file.isFile()) {
-               // long time = file.lastModified();
+                //方案一：根据文件修改日期判断
+                long time = file.lastModified();
 
-                String dateStr=file.getName().replace("alog-","").replace(".txt","");
-                long time= DateUtil.dateStrToTimestamp(dateStr,FORMAT_DATE);
-                if(time==0){
+                //方案二：根据文件名称判断，局限性较大
+                //String dateStr=file.getName().replace("alog-","").replace(".txt","");
+                //long time= DateUtil.dateStrToTimestamp(dateStr,FORMAT_DATE);
+                if (time == 0) {
                     continue;
                 }
                 int day = DateUtil.getBetweenDays(new Date(time));

@@ -12,6 +12,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.gosuncn.glog.util.FileSizeUtil;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +45,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import static com.gosuncn.glog.util.FileSizeUtil.SIZETYPE_MB;
+
 /**
  * <pre>
  *     author: Blankj
@@ -50,6 +54,7 @@ import javax.xml.transform.stream.StreamSource;
  *     time  : 2016/9/21
  *     desc  : 一个精简、全面、方便的 Android Log 库
  * </pre>
+ * https://github.com/Blankj/ALog
  * modify:2018/05/23 by huweijian5
  */
 public final class ALog {
@@ -94,7 +99,7 @@ public final class ALog {
     private static Context sAppContext;
     private static Config sConfig;
     private static ExecutorService sExecutor;
-    private static final int  PERIOD_TIME=20*1000;
+    private static final int PERIOD_TIME = 3600 * 1000;//策略执行周期，单位ms
 
 
     private static Timer timer;
@@ -113,20 +118,30 @@ public final class ALog {
         return sConfig;
     }
 
-    private static void initTimer() {
-        if(timer==null){
-            timer=new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if(sConfig.mLogStoreStrategy!=null){
-                        sConfig.mLogStoreStrategy.execute(TextUtils.isEmpty(sConfig.mDir)?sConfig.mDefaultDir:sConfig.mDir);
-                    }
-                }
-            },1000,PERIOD_TIME);
+    /**
+     * 释放相关资源
+     */
+    public static void uninit(){
+        if(timer!=null){
+            timer.cancel();
+            timer.purge();
+            timer=null;
         }
     }
 
+    private static void initTimer() {
+        if (timer == null) {
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (sConfig.mLogStoreStrategy != null) {
+                        sConfig.mLogStoreStrategy.execute(TextUtils.isEmpty(sConfig.mDir) ? sConfig.mDefaultDir : sConfig.mDir);
+                    }
+                }
+            }, 10000, PERIOD_TIME);
+        }
+    }
 
 
     public static Config getConfig() {
@@ -511,11 +526,24 @@ public final class ALog {
         String time = format.substring(6);*/
         String format = STANDARD_FORMAT.format(now);
         String date = format.substring(0, 10);
-        String time = format.substring(11,19);
+        String time = format.substring(11, 19);
 
         final String fullPath =
                 (sConfig.mDir == null ? sConfig.mDefaultDir : sConfig.mDir)
                         + sConfig.mFilePrefix + "-" + date + ".txt";
+
+        //文件存在且超过指定大小则删除文件,modify by huweijian5
+        File file = new File(fullPath);
+        if (file.exists()) {
+
+            double size =  file.length() / 1048576.0;//MB
+            Log.i(TAG, "print2File: "+file.getName()+"的大小为"+size+"MB");
+            if (size > sConfig.mMaxSingleLogFileSize) {
+                Log.i(TAG, "日志文件:"+file.getName()+",超过"+sConfig.mMaxSingleLogFileSize+"MB,即将删除");
+                file.delete();
+            }
+        }
+
         if (!createOrExistsFile(fullPath)) {
             Log.e("LogUtils", "create " + fullPath + " failed!");
             return;
@@ -528,6 +556,8 @@ public final class ALog {
                 .append(msg)
                 .append(LINE_SEP);
         final String content = sb.toString();
+
+
         input2File(content, fullPath);
     }
 
@@ -638,7 +668,9 @@ public final class ALog {
         private int mFileFilter = V;     // The file's filter of log.
         private int mStackDeep = 1;     // The stack's deep of log.
         private int mStackOffset = 0;     // The stack's offset of log.
-        private ILogStoreStrategy mLogStoreStrategy;
+        private ILogStoreStrategy mLogStoreStrategy;//日志存储策略
+        private int mMaxSingleLogFileSize = 15;//单个文件最大大小，单位MB
+
         private Config() {
             if (mDefaultDir != null) return;
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
@@ -649,11 +681,32 @@ public final class ALog {
             }
         }
 
-        public void setLogStoreStrategy(ILogStoreStrategy logStoreStrategy){
-            this.mLogStoreStrategy=logStoreStrategy;
+        /**
+         * 设置单个日志文件最大大小,默认15MB
+         *
+         * @param mb 单位MB
+         */
+        public Config setMaxSingleLogFileSize(int mb) {
+            mMaxSingleLogFileSize = mb;
+            return this;
+        }
+
+        /**
+         * 设置日志存储策略，可参考SimpleLogStoreStrategy
+         *
+         * @param logStoreStrategy
+         */
+        public Config setLogStoreStrategy(ILogStoreStrategy logStoreStrategy) {
+            this.mLogStoreStrategy = logStoreStrategy;
+            return this;
         }
 
 
+        /**
+         * 设置日志开关
+         * @param logSwitch
+         * @return
+         */
         public Config setLogSwitch(final boolean logSwitch) {
             mLogSwitch = logSwitch;
             return this;
@@ -696,7 +749,7 @@ public final class ALog {
 
         public Config setFilePrefix(final String filePrefix) {
             if (isSpace(filePrefix)) {
-                mFilePrefix = "util";
+                mFilePrefix = "glog";
             } else {
                 mFilePrefix = filePrefix;
             }

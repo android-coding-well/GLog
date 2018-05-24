@@ -196,6 +196,8 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener{
     }
 
     override fun onDestroy() {
+        ALog.uninit()
         super.onDestroy()
+
     }
 }

@@ -1,14 +1,35 @@
-# GitHub上readme模板
-
----
-![image](https://github.com/huweijian5/SegmentBarDemo/blob/master/screenshots/device-2016-09-28-230043.png)
-在使用此模板前记得将“项目名称”替换我实际的项目名
----
+# GLog
 ## 介绍说明
+* 此库基于[ALog](https://github.com/Blankj/ALog),对源码做了部分修改。
 ---
 ## 使用说明
+* 初始化以及反初始化
+```
+//一般在Application中初始化
+val config = ALog.init(this)
+                .setLogSwitch(BuildConfig.DEBUG)// 设置 log 总开关，包括输出到控制台和文件，默认开
+                .setConsoleSwitch(BuildConfig.DEBUG)// 设置是否输出到控制台开关，默认开
+                .setGlobalTag(null)// 设置 log 全局标签，默认为空
+                // 当全局标签不为空时，我们输出的 log 全部为该 tag，
+                // 为空时，如果传入的 tag 为空那就显示类名，否则显示 tag
+                .setLogHeadSwitch(true)// 设置 log 头信息开关，默认为开
+                .setLog2FileSwitch(false)// 打印 log 时是否存到文件的开关，默认关
+                .setDir("")// 当自定义路径为空时，写入应用的 /cache/log/ 目录中
+                .setFilePrefix("")// 当文件前缀为空时，默认为 "glog"，即写入文件为 "glog-yyyy-MM-dd.txt"
+                .setBorderSwitch(true)// 输出日志是否带边框开关，默认开
+                .setSingleTagSwitch(true)// 一条日志仅输出一条，默认开，为美化 AS 3.1 的 Logcat
+                .setConsoleFilter(ALog.V)// log 的控制台过滤器，和 logcat 过滤器同理，默认 Verbose
+                .setFileFilter(ALog.V)// log 文件过滤器，和 logcat 过滤器同理，默认 Verbose
+                .setStackDeep(1)// log 栈深度，默认为 1
+                .setStackOffset(0)// 设置栈偏移，比如二次封装的话就需要设置，默认为 0
+                .setLogStoreStrategy(SimpleLogStoreStrategy())//设置日志存储策略
+                .setMaxSingleLogFileSize(30)//设置单文件大小，默认15MB
 
 
+ //在程序退出时使用，以释放相关资源
+ ALog.uninit();
+```
+* 更多详细介绍可以查看[ALog](https://github.com/Blankj/ALog)
 ---
 ## JavaDoc文档
 
