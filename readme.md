@@ -4,7 +4,7 @@
 ---
 ## 使用说明
 * 初始化以及反初始化
-```
+```kotlin
 //一般在Application中初始化
 val config = ALog.init(this)
                 .setLogSwitch(BuildConfig.DEBUG)// 设置 log 总开关，包括输出到控制台和文件，默认开
