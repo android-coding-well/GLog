@@ -20,12 +20,15 @@ import org.json.JSONObject;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.nio.charset.Charset;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -625,7 +628,10 @@ public final class ALog {
             public Boolean call() throws Exception {
                 BufferedWriter bw = null;
                 try {
-                    bw = new BufferedWriter(new FileWriter(filePath, true));
+                    //FileWriter不支持中文
+                    // bw = new BufferedWriter(new FileWriter(filePath, true));
+                    bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath,true),"UTF-8"));
+
                     bw.write(input);
                     return true;
                 } catch (IOException e) {

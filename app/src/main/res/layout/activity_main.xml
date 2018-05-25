@@ -150,6 +150,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/log_xml"/>
-
+        <Button
+            android:id="@+id/btn_log_chinese"
+            style="@style/WideBtnStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/log_chinese"/>
     </LinearLayout>
 </ScrollView>

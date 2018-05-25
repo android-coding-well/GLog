@@ -82,6 +82,7 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener{
         findViewById<View>(R.id.btn_log_file).setOnClickListener(this)
         findViewById<View>(R.id.btn_log_json).setOnClickListener(this)
         findViewById<View>(R.id.btn_log_xml).setOnClickListener(this)
+        findViewById<View>(R.id.btn_log_chinese).setOnClickListener(this)
         tvAboutLog = findViewById<View>(R.id.tv_about_log) as TextView?
         updateAbout(0)
     }
@@ -147,14 +148,17 @@ class MainActivity : AppCompatActivity() ,View.OnClickListener{
                 ALog.file(ALog.I, "test0 log to file")
             }
             R.id.btn_log_json -> {
-                val json = "{\"tools\": [{ \"name\":\"css format\" , \"site\":\"http://tools.w3cschool.cn/code/css\" },{ \"name\":\"json format\" , \"site\":\"http://tools.w3cschool.cn/code/json\" },{ \"name\":\"pwd check\" , \"site\":\"http://tools.w3cschool.cn/password/my_password_safe\" }]}"
+                val json = "{\"tools\": [{ \"name\":\"css format\" , \"site\":\"http://tools.w3cschool.cn/code/css\" },{ \"name\":\"json format格式化\" , \"site\":\"http://tools.w3cschool.cn/code/json\" },{ \"name\":\"pwd check\" , \"site\":\"http://tools.w3cschool.cn/password/my_password_safe\" }]}"
                 ALog.json(json)
                 ALog.json(ALog.I, json)
             }
             R.id.btn_log_xml -> {
-                val xml = "<books><book><author>Jack Herrington</author><title>PHP Hacks</title><publisher>O'Reilly</publisher></book><book><author>Jack Herrington</author><title>Podcasting Hacks</title><publisher>O'Reilly</publisher></book></books>"
+                val xml = "<books><book><author>Jack Herrington</author><title>PHP Hacks 中文</title><publisher>O'Reilly</publisher></book><book><author>Jack Herrington</author><title>Podcasting Hacks</title><publisher>O'Reilly</publisher></book></books>"
                 ALog.xml(xml)
                 ALog.xml(ALog.I, xml)
+            }
+            R.id.btn_log_chinese -> {
+                ALog.e("我是中文")
             }
         }
     }
